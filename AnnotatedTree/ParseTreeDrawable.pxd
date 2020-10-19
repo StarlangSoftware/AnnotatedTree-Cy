@@ -8,6 +8,7 @@ from WordNet.WordNet cimport WordNet
 cdef class ParseTreeDrawable(ParseTree):
 
     cdef str __name
+    cdef FileDescription __fileDescription
 
     cpdef setFileDescription(self, FileDescription fileDescription)
     cpdef FileDescription getFileDescription(self)
