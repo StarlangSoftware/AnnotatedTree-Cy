@@ -15,7 +15,7 @@ setup(
                            "AnnotatedTree/Processor/LayerExist/*.pyx"],
                           compiler_directives={'language_level': "3"}),
     name='NlpToolkit-AnnotatedTree-Cy',
-    version='1.0.0',
+    version='1.0.1',
     packages=['AnnotatedTree', 'AnnotatedTree.Layer', 'AnnotatedTree.Processor', 'AnnotatedTree.Processor.Condition',
               'AnnotatedTree.Processor.LayerExist', 'AnnotatedTree.Processor.LeafConverter',
               'AnnotatedTree.Processor.NodeModification', 'AnnotatedTree.AutoProcessor',
