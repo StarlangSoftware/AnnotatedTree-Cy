@@ -22,7 +22,7 @@ setup(
                   'AnnotatedTree.Processor.LayerExist': ['*.pxd', '*.pyx', '*.c', '*.py'],
                   'AnnotatedTree.Processor.LeafConverter': ['*.pxd', '*.pyx', '*.c', '*.py'],
                   'AnnotatedTree.Processor.NodeModification': ['*.pxd', '*.pyx', '*.c', '*.py']},
-    url='https://github.com/olcaytaner/AnnotatedTree-Cy',
+    url='https://github.com/StarlangSoftware/AnnotatedTree-Cy',
     license='',
     author='olcaytaner',
     author_email='olcay.yildiz@ozyegin.edu.tr',
