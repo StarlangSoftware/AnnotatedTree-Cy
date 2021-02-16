@@ -13,7 +13,7 @@ cdef class IsVerbNode(IsLeafNode):
         cdef int i
         cdef str synSetId
         layerInfo = parseNode.getLayerInfo()
-        if super().satisfies(parseNode) and layerInfo is not None and \
+        if parseNode.numberOfChildren() == 0 and layerInfo is not None and \
             layerInfo.getLayerData(ViewLayerType.SEMANTICS) is not None:
             for i in range(layerInfo.getNumberOfMeanings()):
                 synSetId = layerInfo.getSemanticAt(i)

@@ -40,7 +40,7 @@ cdef class ParseNodeDrawable(ParseNode):
 
     cpdef Symbol getData(self):
         if self.layers is None:
-            return super().getData()
+            return self.data
         else:
             return Symbol(self.getLayerData(ViewLayerType.ENGLISH_WORD))
 

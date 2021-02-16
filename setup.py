@@ -11,7 +11,7 @@ setup(
                            "AnnotatedTree/Processor/LayerExist/*.pyx"],
                           compiler_directives={'language_level': "3"}),
     name='NlpToolkit-AnnotatedTree-Cy',
-    version='1.0.4',
+    version='1.0.6',
     packages=['AnnotatedTree', 'AnnotatedTree.Layer', 'AnnotatedTree.Processor', 'AnnotatedTree.Processor.Condition',
               'AnnotatedTree.Processor.LayerExist', 'AnnotatedTree.Processor.LeafConverter',
               'AnnotatedTree.Processor.NodeModification'],
@@ -27,5 +27,5 @@ setup(
     author='olcaytaner',
     author_email='olcay.yildiz@ozyegin.edu.tr',
     description='Annotated constituency treebank library',
-    install_requires = ['NlpToolkit-AnnotatedSentence-Cy', 'NlpToolkit-ParseTree-Cy']
+    install_requires = ['NlpToolkit-AnnotatedSentence-Cy', 'NlpToolkit-ParseTree-Cy', 'NlpToolkit-FrameNet-Cy']
 )

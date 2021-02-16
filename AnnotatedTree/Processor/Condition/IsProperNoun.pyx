@@ -6,7 +6,7 @@ cdef class IsProperNoun(IsLeafNode):
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
         cdef str parentData
-        if super().satisfies(parseNode):
+        if parseNode.numberOfChildren() == 0:
             parentData = parseNode.getParent().getData().getName()
             return parentData == "NNP" or parentData == "NNPS"
         return False

@@ -9,7 +9,7 @@ cdef class IsTransferable(IsLeafNode):
         self.__secondLanguage = secondLanguage
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
-        if super().satisfies(parseNode):
+        if parseNode.numberOfChildren() == 0:
             if IsNoneNode(self.__secondLanguage).satisfies(parseNode):
                 return False
             return not IsNullElement().satisfies(parseNode)

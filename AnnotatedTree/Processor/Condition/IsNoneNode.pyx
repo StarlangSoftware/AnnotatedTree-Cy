@@ -8,7 +8,7 @@ cdef class IsNoneNode(IsLeafNode):
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
         cdef str data
-        if super().satisfies(parseNode):
+        if parseNode.numberOfChildren() == 0:
             data = parseNode.getLayerData(self.__secondLanguage)
             return data is not None and data == "*NONE*"
         return False

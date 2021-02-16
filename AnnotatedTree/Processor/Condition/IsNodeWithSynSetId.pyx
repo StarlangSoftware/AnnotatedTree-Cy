@@ -10,7 +10,7 @@ cdef class IsNodeWithSynSetId(IsLeafNode):
         cdef LayerInfo layerInfo
         cdef int i
         cdef str synSetId
-        if super().satisfies(parseNode):
+        if parseNode.numberOfChildren() == 0:
             layerInfo = parseNode.getLayerInfo()
             for i in range(layerInfo.getNumberOfMeanings()):
                 synSetId = layerInfo.getSemanticAt(i)
