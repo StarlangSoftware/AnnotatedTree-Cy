@@ -1,6 +1,7 @@
 import os
 import re
 
+from Corpus.FileDescription cimport FileDescription
 
 cdef class TreeBankDrawable(TreeBank):
 
@@ -15,6 +16,7 @@ cdef class TreeBankDrawable(TreeBank):
                         parseTree = ParseTreeDrawable(fileName)
                         if parseTree.getRoot() is not None:
                             parseTree.setName(fileName)
+                            parseTree.setFileDescription(FileDescription(root, file))
                             self.parseTrees.append(parseTree)
 
     cpdef list getParseTrees(self):

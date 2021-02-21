@@ -56,13 +56,13 @@ cdef class ParseTreeDrawable(ParseTree):
             self.reload()
 
     cpdef saveWithFileName(self):
-        outputFile = open(self.__fileDescription.getFileName(), encoding="utf8")
-        outputFile.write("(" + self.__str__() + ")\n")
+        outputFile = open(self.__fileDescription.getFileName(), mode='w', encoding="utf8")
+        outputFile.write("( " + self.__str__() + " )\n")
         outputFile.close()
 
     cpdef saveWithPath(self, str newPath):
-        outputFile = open(self.__fileDescription.getFileName(newPath), encoding="utf8")
-        outputFile.write("(" + self.__str__() + ")\n")
+        outputFile = open(self.__fileDescription.getFileName(newPath), mode='w', encoding="utf8")
+        outputFile.write("( " + self.__str__() + " )\n")
         outputFile.close()
 
     cpdef int maxDepth(self):

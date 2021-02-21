@@ -10,6 +10,7 @@ cdef class ParseNodeDrawable(ParseNode):
         self.children = []
         self.parent = parent
         self.layers = None
+        self.data = None
         self.depth = depth
         parenthesisCount = 0
         childLine = ""
@@ -185,5 +186,5 @@ cdef class ParseNodeDrawable(ParseNode):
         else:
             st = "(" + self.data.getName()
             for child in self.children:
-                st = st + child.__str__()
-            return st + ")"
+                st = st + " " + child.__str__()
+            return st + ") "
