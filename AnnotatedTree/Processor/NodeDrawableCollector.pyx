@@ -6,11 +6,10 @@ cdef class NodeDrawableCollector:
 
     cpdef collectNodes(self, ParseNodeDrawable parseNode, list collected):
         cdef int i
-        if self.__condition.satisfies(parseNode):
+        if self.__condition is None or self.__condition.satisfies(parseNode):
             collected.append(parseNode)
-        else:
-            for i in range(parseNode.numberOfChildren()):
-                self.collectNodes(parseNode.getChild(i), collected)
+        for i in range(parseNode.numberOfChildren()):
+            self.collectNodes(parseNode.getChild(i), collected)
 
     cpdef list collect(self):
         cdef list result
