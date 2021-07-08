@@ -1,5 +1,3 @@
-from AnnotatedTree.ParseNodeDrawable cimport ParseNodeDrawable
-from AnnotatedTree.Processor.Condition.IsLeafNode cimport IsLeafNode
 from AnnotatedTree.Processor.Condition.IsNullElement cimport IsNullElement
 
 

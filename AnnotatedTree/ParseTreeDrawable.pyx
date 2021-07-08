@@ -1,6 +1,8 @@
 from AnnotatedTree.ParseNodeDrawable cimport ParseNodeDrawable
+from AnnotatedSentence.AnnotatedWord cimport AnnotatedWord
 from AnnotatedTree.Processor.Condition.IsPredicateVerbNode cimport IsPredicateVerbNode
 from AnnotatedTree.Processor.Condition.IsTurkishLeafNode cimport IsTurkishLeafNode
+from AnnotatedTree.Processor.Condition.IsEnglishLeafNode cimport IsEnglishLeafNode
 from AnnotatedTree.Processor.Condition.IsVerbNode cimport IsVerbNode
 from AnnotatedTree.Processor.NodeDrawableCollector cimport NodeDrawableCollector
 from AnnotatedTree.LayerInfo cimport LayerInfo
@@ -93,7 +95,7 @@ cdef class ParseTreeDrawable(ParseTree):
         if self.root is not None and isinstance(self.root, ParseNodeDrawable):
             self.root.clearLayer(viewLayerType)
 
-    cpdef AnnotatedSentence generateAnnotatedSentence(self):
+    cpdef AnnotatedSentence generateAnnotatedSentence(self, str language=None):
         cdef AnnotatedSentence sentence
         cdef NodeDrawableCollector nodeDrawableCollector
         cdef list leafList
@@ -101,13 +103,22 @@ cdef class ParseTreeDrawable(ParseTree):
         cdef ParseNodeDrawable parseNode
         cdef LayerInfo layers
         sentence = AnnotatedSentence()
-        nodeDrawableCollector = NodeDrawableCollector(self.root, IsTurkishLeafNode())
+        if language is None:
+            nodeDrawableCollector = NodeDrawableCollector(self.root, IsTurkishLeafNode())
+            leafList = nodeDrawableCollector.collect()
+            for parseNode in leafList:
+                if isinstance(parseNode, ParseNodeDrawable):
+                    layers = parseNode.getLayerInfo()
+                    for i in range(layers.getNumberOfWords()):
+                        sentence.addWord(layers.toAnnotatedWord(i))
+        else:
+            nodeDrawableCollector = NodeDrawableCollector(self.root, IsEnglishLeafNode())
         leafList = nodeDrawableCollector.collect()
         for parseNode in leafList:
             if isinstance(parseNode, ParseNodeDrawable):
-                layers = parseNode.getLayerInfo()
-                for i in range(layers.getNumberOfWords()):
-                    sentence.addWord(layers.toAnnotatedWord(i))
+                newWord = AnnotatedWord("{" + language + "=" + parseNode.getData().getName() + "}{posTag="
+                                        + parseNode.getParent().getData().getName() + "}")
+                sentence.addWord(newWord)
         return sentence
 
     cpdef list extractNodesWithVerbs(self, WordNet wordNet):

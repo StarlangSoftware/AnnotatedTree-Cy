@@ -87,6 +87,7 @@ AnnotatedTree/Processor/TreeToStringConverter.c
 AnnotatedTree/Processor/TreeToStringConverter.pyx
 AnnotatedTree/Processor/__init__.py
 AnnotatedTree/Processor/Condition/IsEnglishLeafNode.c
+AnnotatedTree/Processor/Condition/IsEnglishLeafNode.pxd
 AnnotatedTree/Processor/Condition/IsEnglishLeafNode.pyx
 AnnotatedTree/Processor/Condition/IsLeafNode.c
 AnnotatedTree/Processor/Condition/IsLeafNode.pxd
