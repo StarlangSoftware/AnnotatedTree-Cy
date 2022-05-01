@@ -121,6 +121,11 @@ cdef class ParseTreeDrawable(ParseTree):
                 sentence.addWord(newWord)
         return sentence
 
+    cpdef ParseTree generateParseTree(self, bint surfaceForm):
+        result = ParseTree(ParseNode(self.root.getData()))
+        self.root.generateParseNode(result.getRoot(), surfaceForm)
+        return result
+
     cpdef list extractNodesWithVerbs(self, WordNet wordNet):
         cdef NodeDrawableCollector nodeDrawableCollector
         nodeDrawableCollector = NodeDrawableCollector(self.root, IsVerbNode(wordNet))

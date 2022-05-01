@@ -27,5 +27,6 @@ cdef class ParseTreeDrawable(ParseTree):
     cpdef bint layerAll(self, object viewLayerType)
     cpdef clearLayer(self, object viewLayerType)
     cpdef AnnotatedSentence generateAnnotatedSentence(self, str language=*)
+    cpdef ParseTree generateParseTree(self, bint surfaceForm)
     cpdef list extractNodesWithVerbs(self, WordNet wordNet)
     cpdef list extractNodesWithPredicateVerbs(self, WordNet wordNet)

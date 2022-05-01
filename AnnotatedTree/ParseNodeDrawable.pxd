@@ -26,4 +26,5 @@ cdef class ParseNodeDrawable(ParseNode):
     cpdef bint isDummyNode(self)
     cpdef bint layerAll(self, viewLayerType)
     cpdef str toTurkishSentence(self)
+    cpdef generateParseNode(self, ParseNode parseNode, bint surfaceForm)
     cpdef checkGazetteer(self, Gazetteer gazetteer, str word)
