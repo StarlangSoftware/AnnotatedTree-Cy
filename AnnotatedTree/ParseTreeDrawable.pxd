@@ -7,15 +7,12 @@ from WordNet.WordNet cimport WordNet
 
 cdef class ParseTreeDrawable(ParseTree):
 
-    cdef str __name
     cdef FileDescription __fileDescription
 
     cpdef setFileDescription(self, FileDescription fileDescription)
     cpdef FileDescription getFileDescription(self)
     cpdef reload(self)
     cpdef readFromFile(self, str fileName)
-    cpdef setName(self, str name)
-    cpdef str getName(self)
     cpdef nextTree(self, int count)
     cpdef previousTree(self, int count)
     cpdef saveWithFileName(self)

@@ -1,3 +1,5 @@
+import os
+
 from AnnotatedTree.ParseNodeDrawable cimport ParseNodeDrawable
 from AnnotatedSentence.AnnotatedWord cimport AnnotatedWord
 from AnnotatedTree.Processor.Condition.IsPredicateVerbNode cimport IsPredicateVerbNode
@@ -14,11 +16,14 @@ cdef class ParseTreeDrawable(ParseTree):
         if path is None:
             if isinstance(fileDescription, FileDescription):
                 self.__fileDescription = fileDescription
+                self.name = fileDescription.getRawFileName()
                 self.readFromFile(self.__fileDescription.getFileName(fileDescription.getPath()))
             elif isinstance(fileDescription, str):
+                self.name = os.path.split(fileDescription)[1]
                 self.readFromFile(fileDescription)
         else:
             self.__fileDescription = FileDescription(path, fileDescription.getExtension(), fileDescription.getIndex())
+            self.name = self.__fileDescription.getRawFileName()
             self.readFromFile(self.__fileDescription.getFileName(fileDescription.getPath()))
 
     cpdef setFileDescription(self, FileDescription fileDescription):
@@ -40,12 +45,6 @@ cdef class ParseTreeDrawable(ParseTree):
         else:
             self.root = None
         inputFile.close()
-
-    cpdef setName(self, str name):
-        self.__name = name
-
-    cpdef str getName(self):
-        return self.__name
 
     cpdef nextTree(self, int count):
         if self.__fileDescription.nextFileExists(count):
@@ -113,12 +112,12 @@ cdef class ParseTreeDrawable(ParseTree):
                         sentence.addWord(layers.toAnnotatedWord(i))
         else:
             nodeDrawableCollector = NodeDrawableCollector(self.root, IsEnglishLeafNode())
-        leafList = nodeDrawableCollector.collect()
-        for parseNode in leafList:
-            if isinstance(parseNode, ParseNodeDrawable):
-                newWord = AnnotatedWord("{" + language + "=" + parseNode.getData().getName() + "}{posTag="
+            leafList = nodeDrawableCollector.collect()
+            for parseNode in leafList:
+                if isinstance(parseNode, ParseNodeDrawable):
+                    newWord = AnnotatedWord("{" + language + "=" + parseNode.getData().getName() + "}{posTag="
                                         + parseNode.getParent().getData().getName() + "}")
-                sentence.addWord(newWord)
+                    sentence.addWord(newWord)
         return sentence
 
     cpdef ParseTree generateParseTree(self, bint surfaceForm):
