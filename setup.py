@@ -2,7 +2,7 @@ from setuptools import setup
 
 from pathlib import Path
 this_directory = Path(__file__).parent
-long_description = (this_directory / "README.md").read_text()
+long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 from Cython.Build import cythonize
 
 setup(
@@ -15,7 +15,7 @@ setup(
                            "AnnotatedTree/Processor/LayerExist/*.pyx"],
                           compiler_directives={'language_level': "3"}),
     name='NlpToolkit-AnnotatedTree-Cy',
-    version='1.0.12',
+    version='1.0.13',
     packages=['AnnotatedTree', 'AnnotatedTree.Layer', 'AnnotatedTree.Processor', 'AnnotatedTree.Processor.Condition',
               'AnnotatedTree.Processor.LayerExist', 'AnnotatedTree.Processor.LeafConverter',
               'AnnotatedTree.Processor.NodeModification'],
@@ -31,7 +31,7 @@ setup(
     author='olcaytaner',
     author_email='olcay.yildiz@ozyegin.edu.tr',
     description='Annotated constituency treebank library',
-    install_requires = ['NlpToolkit-AnnotatedSentence-Cy', 'NlpToolkit-ParseTree-Cy', 'NlpToolkit-FrameNet-Cy'],
+    install_requires = ['NlpToolkit-AnnotatedSentence-Cy', 'NlpToolkit-ParseTree-Cy'],
     long_description=long_description,
     long_description_content_type='text/markdown'
 )
