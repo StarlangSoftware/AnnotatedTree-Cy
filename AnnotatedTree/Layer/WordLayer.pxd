@@ -1,6 +1,6 @@
 cdef class WordLayer:
 
-    cdef str layerValue, layerName
+    cdef str layer_value, layer_name
 
     cpdef str getLayerValue(self)
     cpdef str getLayerName(self)

@@ -5,9 +5,9 @@ cdef class IsTurkishLeafNode(IsLeafNode):
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
         cdef str data
-        cdef str parentData
+        cdef str parent_data
         if parseNode.numberOfChildren() == 0:
             data = parseNode.getLayerData(ViewLayerType.TURKISH_WORD)
-            parentData = parseNode.getParent().getData().getName()
-            return data is not None and "*" not in data and (not (data == "0" and parentData == "-NONE-"))
+            parent_data = parseNode.getParent().getData().getName()
+            return data is not None and "*" not in data and (not (data == "0" and parent_data == "-NONE-"))
         return False

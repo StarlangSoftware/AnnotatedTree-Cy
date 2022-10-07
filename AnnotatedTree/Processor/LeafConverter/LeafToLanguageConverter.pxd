@@ -4,6 +4,6 @@ from AnnotatedTree.Processor.LeafConverter.LeafToStringConverter cimport LeafToS
 
 cdef class LeafToLanguageConverter(LeafToStringConverter):
 
-    cdef object viewLayerType
+    cdef object view_layer_type
 
     cpdef str leafConverter(self, ParseNodeDrawable leafNode)

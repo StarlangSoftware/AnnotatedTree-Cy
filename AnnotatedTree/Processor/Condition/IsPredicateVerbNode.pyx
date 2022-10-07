@@ -8,7 +8,7 @@ cdef class IsPredicateVerbNode(IsVerbNode):
         super().__init__(wordNet)
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
-        cdef LayerInfo layerInfo
-        layerInfo = parseNode.getLayerInfo()
-        return super().satisfies(parseNode) and layerInfo is not None and layerInfo.getArgument() is not None \
-               and layerInfo.getArgument().getArgumentType() == "PREDICATE"
+        cdef LayerInfo layer_info
+        layer_info = parseNode.getLayerInfo()
+        return super().satisfies(parseNode) and layer_info is not None and layer_info.getArgument() is not None \
+               and layer_info.getArgument().getArgumentType() == "PREDICATE"

@@ -7,9 +7,9 @@ from AnnotatedTree.Processor.Condition.IsLeafNode cimport IsLeafNode
 cdef class IsNumber(IsLeafNode):
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode):
-        cdef str data, parentData
+        cdef str data, parent_data
         if parseNode.numberOfChildren() == 0:
             data = parseNode.getLayerData(ViewLayerType.ENGLISH_WORD)
-            parentData = parseNode.getParent().getData().getName()
-            return parentData == "CD" and re.fullmatch("[0-9,.]+", data) is not None
+            parent_data = parseNode.getParent().getData().getName()
+            return parent_data == "CD" and re.fullmatch("[0-9,.]+", data) is not None
         return False

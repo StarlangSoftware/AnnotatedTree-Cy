@@ -1,13 +1,13 @@
 cdef class ShallowParseLayer(MultiWordLayer):
 
     def __init__(self, layerValue: str):
-        self.layerName = "shallowParse"
+        self.layer_name = "shallowParse"
         self.setLayerValue(layerValue)
 
     cpdef setLayerValue(self, str layerValue):
-        cdef list splitParse
+        cdef list split_parse
         self.items = []
-        self.layerValue = layerValue
+        self.layer_value = layerValue
         if layerValue is not None:
-            splitParse = layerValue.split(" ")
-            self.items.extend(splitParse)
+            split_parse = layerValue.split(" ")
+            self.items.extend(split_parse)

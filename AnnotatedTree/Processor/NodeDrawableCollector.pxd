@@ -5,7 +5,7 @@ from AnnotatedTree.Processor.Condition.NodeDrawableCondition cimport NodeDrawabl
 cdef class NodeDrawableCollector:
 
     cdef NodeDrawableCondition __condition
-    cdef ParseNodeDrawable __rootNode
+    cdef ParseNodeDrawable __root_node
 
     cpdef collectNodes(self, ParseNodeDrawable parseNode, list collected)
     cpdef list collect(self)

@@ -7,15 +7,17 @@ cdef class TargetLanguageWordLayer(MultiWordLayer):
         self.setLayerValue(layerValue)
 
     cpdef setLayerValue(self, str layerValue):
-        cdef list splitWords
+        cdef list split_words
         self.items = []
-        self.layerValue = layerValue
+        self.layer_value = layerValue
         if layerValue is not None:
-            splitWords = layerValue.split(" ")
-            self.items.extend(splitWords)
+            split_words = layerValue.split(" ")
+            self.items.extend(split_words)
 
     cpdef int getLayerSize(self, object viewLayer):
         return 0
 
-    cpdef str getLayerInfoAt(self, object viewLayer, int index):
+    cpdef str getLayerInfoAt(self,
+                             object viewLayer,
+                             int index):
         return None

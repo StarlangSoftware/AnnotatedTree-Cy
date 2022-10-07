@@ -6,13 +6,13 @@ from AnnotatedTree.LayerInfo cimport LayerInfo
 cdef class LeafToRootFormConverter(LeafToStringConverter):
 
     cpdef str leafConverter(self, ParseNodeDrawable parseNodeDrawable):
-        cdef str rootWords, root
+        cdef str root_words, root
         cdef int i
-        cdef LayerInfo layerInfo
-        layerInfo = parseNodeDrawable.getLayerInfo()
-        rootWords = " "
-        for i in range(layerInfo.getNumberOfWords()):
-            root = layerInfo.getMorphologicalParseAt(i).getWord().getName()
+        cdef LayerInfo layer_info
+        layer_info = parseNodeDrawable.getLayerInfo()
+        root_words = " "
+        for i in range(layer_info.getNumberOfWords()):
+            root = layer_info.getMorphologicalParseAt(i).getWord().getName()
             if root is not None and len(root) != 0:
-                rootWords += " " + root
-        return rootWords
+                root_words += " " + root
+        return root_words

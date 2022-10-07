@@ -4,6 +4,6 @@ from AnnotatedTree.Processor.Condition.IsLeafNode cimport IsLeafNode
 
 cdef class IsTransferable(IsLeafNode):
 
-    cdef object __secondLanguage
+    cdef object __second_language
 
     cpdef bint satisfies(self, ParseNodeDrawable parseNode)

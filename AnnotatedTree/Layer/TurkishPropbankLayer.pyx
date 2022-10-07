@@ -1,11 +1,11 @@
 cdef class TurkishPropbankLayer(SingleWordLayer):
 
     def __init__(self, layerValue: str):
-        self.layerName = "propbank"
+        self.layer_name = "propbank"
         self.setLayerValue(layerValue)
 
     cpdef setLayerValue(self, str layerValue):
-        self.layerValue = layerValue
+        self.layer_value = layerValue
         self.__propbank = Argument(layerValue)
 
     cpdef Argument getArgument(self):

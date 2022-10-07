@@ -12,59 +12,61 @@ from AnnotatedTree.LayerInfo cimport LayerInfo
 
 cdef class ParseTreeDrawable(ParseTree):
 
-    def __init__(self, fileDescription, path: str=None):
+    def __init__(self,
+                 fileDescription,
+                 path: str=None):
         if path is None:
             if isinstance(fileDescription, FileDescription):
-                self.__fileDescription = fileDescription
+                self.__file_description = fileDescription
                 self.name = fileDescription.getRawFileName()
-                self.readFromFile(self.__fileDescription.getFileName(fileDescription.getPath()))
+                self.readFromFile(self.__file_description.getFileName(fileDescription.getPath()))
             elif isinstance(fileDescription, str):
                 self.name = os.path.split(fileDescription)[1]
                 self.readFromFile(fileDescription)
         else:
-            self.__fileDescription = FileDescription(path, fileDescription.getExtension(), fileDescription.getIndex())
-            self.name = self.__fileDescription.getRawFileName()
-            self.readFromFile(self.__fileDescription.getFileName(fileDescription.getPath()))
+            self.__file_description = FileDescription(path, fileDescription.getExtension(), fileDescription.getIndex())
+            self.name = self.__file_description.getRawFileName()
+            self.readFromFile(self.__file_description.getFileName(fileDescription.getPath()))
 
     cpdef setFileDescription(self, FileDescription fileDescription):
-        self.__fileDescription = fileDescription
+        self.__file_description = fileDescription
 
     cpdef FileDescription getFileDescription(self):
-        return self.__fileDescription
+        return self.__file_description
 
     cpdef reload(self):
-        self.readFromFile(self.__fileDescription.getFileName(self.__fileDescription.getPath()))
+        self.readFromFile(self.__file_description.getFileName(self.__file_description.getPath()))
 
     cpdef readFromFile(self, str fileName):
         cdef str line
-        inputFile = open(fileName, encoding="utf8")
-        line = inputFile.readline().strip()
+        input_file = open(fileName, encoding="utf8")
+        line = input_file.readline().strip()
         if "(" in line and ")" in line:
             line = line[line.index("(") + 1:line.rindex(")")].strip()
             self.root = ParseNodeDrawable(None, line, False, 0)
         else:
             self.root = None
-        inputFile.close()
+        input_file.close()
 
     cpdef nextTree(self, int count):
-        if self.__fileDescription.nextFileExists(count):
-            self.__fileDescription.addToIndex(count)
+        if self.__file_description.nextFileExists(count):
+            self.__file_description.addToIndex(count)
             self.reload()
 
     cpdef previousTree(self, int count):
-        if self.__fileDescription.previousFileExists(count):
-            self.__fileDescription.addToIndex(-count)
+        if self.__file_description.previousFileExists(count):
+            self.__file_description.addToIndex(-count)
             self.reload()
 
     cpdef saveWithFileName(self):
-        outputFile = open(self.__fileDescription.getFileName(), mode='w', encoding="utf8")
-        outputFile.write("( " + self.__str__() + " )\n")
-        outputFile.close()
+        output_file = open(self.__file_description.getFileName(), mode='w', encoding="utf8")
+        output_file.write("( " + self.__str__() + " )\n")
+        output_file.close()
 
     cpdef saveWithPath(self, str newPath):
-        outputFile = open(self.__fileDescription.getFileName(newPath), mode='w', encoding="utf8")
-        outputFile.write("( " + self.__str__() + " )\n")
-        outputFile.close()
+        output_file = open(self.__file_description.getFileName(newPath), mode='w', encoding="utf8")
+        output_file.write("( " + self.__str__() + " )\n")
+        output_file.close()
 
     cpdef int maxDepth(self):
         if isinstance(self.root, ParseNodeDrawable):
@@ -96,27 +98,27 @@ cdef class ParseTreeDrawable(ParseTree):
 
     cpdef AnnotatedSentence generateAnnotatedSentence(self, str language=None):
         cdef AnnotatedSentence sentence
-        cdef NodeDrawableCollector nodeDrawableCollector
-        cdef list leafList
+        cdef NodeDrawableCollector node_drawable_collector
+        cdef list leaf_list
         cdef int i
-        cdef ParseNodeDrawable parseNode
+        cdef ParseNodeDrawable parse_node
         cdef LayerInfo layers
         sentence = AnnotatedSentence()
         if language is None:
-            nodeDrawableCollector = NodeDrawableCollector(self.root, IsTurkishLeafNode())
-            leafList = nodeDrawableCollector.collect()
-            for parseNode in leafList:
-                if isinstance(parseNode, ParseNodeDrawable):
-                    layers = parseNode.getLayerInfo()
+            node_drawable_collector = NodeDrawableCollector(self.root, IsTurkishLeafNode())
+            leaf_list = node_drawable_collector.collect()
+            for parse_node in leaf_list:
+                if isinstance(parse_node, ParseNodeDrawable):
+                    layers = parse_node.getLayerInfo()
                     for i in range(layers.getNumberOfWords()):
                         sentence.addWord(layers.toAnnotatedWord(i))
         else:
-            nodeDrawableCollector = NodeDrawableCollector(self.root, IsEnglishLeafNode())
-            leafList = nodeDrawableCollector.collect()
-            for parseNode in leafList:
-                if isinstance(parseNode, ParseNodeDrawable):
-                    newWord = AnnotatedWord("{" + language + "=" + parseNode.getData().getName() + "}{posTag="
-                                        + parseNode.getParent().getData().getName() + "}")
+            node_drawable_collector = NodeDrawableCollector(self.root, IsEnglishLeafNode())
+            leaf_list = node_drawable_collector.collect()
+            for parse_node in leaf_list:
+                if isinstance(parse_node, ParseNodeDrawable):
+                    newWord = AnnotatedWord("{" + language + "=" + parse_node.getData().getName() + "}{posTag="
+                                        + parse_node.getParent().getData().getName() + "}")
                     sentence.addWord(newWord)
         return sentence
 
@@ -126,11 +128,11 @@ cdef class ParseTreeDrawable(ParseTree):
         return result
 
     cpdef list extractNodesWithVerbs(self, WordNet wordNet):
-        cdef NodeDrawableCollector nodeDrawableCollector
-        nodeDrawableCollector = NodeDrawableCollector(self.root, IsVerbNode(wordNet))
-        return nodeDrawableCollector.collect()
+        cdef NodeDrawableCollector node_drawable_collector
+        node_drawable_collector = NodeDrawableCollector(self.root, IsVerbNode(wordNet))
+        return node_drawable_collector.collect()
 
     cpdef list extractNodesWithPredicateVerbs(self, WordNet wordNet):
-        cdef NodeDrawableCollector nodeDrawableCollector
-        nodeDrawableCollector = NodeDrawableCollector(self.root, IsPredicateVerbNode(wordNet))
-        return nodeDrawableCollector.collect()
+        cdef NodeDrawableCollector node_drawable_collector
+        node_drawable_collector = NodeDrawableCollector(self.root, IsPredicateVerbNode(wordNet))
+        return node_drawable_collector.collect()

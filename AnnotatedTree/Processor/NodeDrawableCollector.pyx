@@ -1,7 +1,7 @@
 cdef class NodeDrawableCollector:
 
     def __init__(self, rootNode: ParseNodeDrawable, condition: NodeDrawableCondition):
-        self.__rootNode = rootNode
+        self.__root_node = rootNode
         self.__condition = condition
 
     cpdef collectNodes(self, ParseNodeDrawable parseNode, list collected):
@@ -14,5 +14,5 @@ cdef class NodeDrawableCollector:
     cpdef list collect(self):
         cdef list result
         result = []
-        self.collectNodes(self.__rootNode, result)
+        self.collectNodes(self.__root_node, result)
         return result

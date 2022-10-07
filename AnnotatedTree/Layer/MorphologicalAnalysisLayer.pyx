@@ -5,23 +5,23 @@ from MorphologicalAnalysis.MorphologicalParse cimport MorphologicalParse
 cdef class MorphologicalAnalysisLayer(MultiWordMultiItemLayer):
 
     def __init__(self, layerValue: str):
-        self.layerName = "morphologicalAnalysis"
+        self.layer_name = "morphologicalAnalysis"
         self.setLayerValue(layerValue)
 
     cpdef setLayerValue(self, str layerValue):
-        cdef list splitWords
+        cdef list split_words
         cdef str word
         cdef MorphologicalParse parse
         self.items = []
         if isinstance(layerValue, str):
-            self.layerValue = layerValue
+            self.layer_value = layerValue
             if layerValue is not None:
-                splitWords = self.layerValue.split(" ")
-                for word in splitWords:
+                split_words = self.layer_value.split(" ")
+                for word in split_words:
                     self.items.append(MorphologicalParse(word))
         elif isinstance(layerValue, MorphologicalParse):
             parse = layerValue
-            self.layerValue = parse.getTransitionList()
+            self.layer_value = parse.getTransitionList()
             self.items.append(parse)
 
     cpdef int getLayerSize(self, object viewLayer):

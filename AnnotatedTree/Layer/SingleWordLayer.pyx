@@ -1,4 +1,4 @@
 cdef class SingleWordLayer(WordLayer):
 
     cpdef setLayerValue(self, str layerValue):
-        self.layerValue = layerValue
+        self.layer_value = layerValue
