@@ -9,9 +9,18 @@ cdef class ContainsLayerInformation(LeafListCondition):
     cdef object __view_layer_type
 
     def __init__(self, viewLayerType: ViewLayerType):
+        """
+        Constructor for ContainsLayerInformation class. Sets the viewLayerType attribute.
+        :param viewLayerType: Layer for which check is done.
+        """
         self.__view_layer_type = viewLayerType
 
     cpdef bint satisfies(self, list leafList):
+        """
+        Checks if all leaf nodes in the leafList contains the given layer information.
+        :param leafList: Array list storing the leaf nodes.
+        :return: True if all leaf nodes in the leafList contains the given layer information, false otherwise.
+        """
         cdef ParseNodeDrawable parse_node
         for parse_node in leafList:
             if isinstance(parse_node, ParseNodeDrawable) and "*" \

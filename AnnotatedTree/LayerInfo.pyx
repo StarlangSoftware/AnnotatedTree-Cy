@@ -21,6 +21,14 @@ from AnnotatedTree.Layer.TurkishWordLayer cimport TurkishWordLayer
 cdef class LayerInfo:
 
     def __init__(self, info: str = None):
+        """
+        Constructs the layer information from the given string. Layers are represented as
+        {layername1=layervalue1}{layername2=layervalue2}...{layernamek=layervaluek} where layer name is one of the
+        following: turkish, persian, english, morphologicalAnalysis, metaMorphemes, metaMorphemesMoved, dependency,
+        semantics, namedEntity, propBank, englishPropbank, englishSemantics, shallowParse. Splits the string w.r.t.
+        parentheses and constructs layer objects and put them layers map accordingly.
+        :param info: Line consisting of layer info.
+        """
         cdef str layer_type, layer_value, layer
         cdef list split_layers
         if info is None:
@@ -62,6 +70,13 @@ cdef class LayerInfo:
     cpdef setLayerData(self,
                        object viewLayer,
                        str layerValue):
+        """
+        Changes the given layer info with the given string layer value. For all layers new layer object is created and
+        replaces the original object. For turkish layer, it also destroys inflectional_group, part_of_speech,
+        meta_morpheme, meta_morpheme_moved and semantics layers. For persian layer, it also destroys the semantics layer.
+        :param viewLayer: Layer name.
+        :param layerValue: New layer value.
+        """
         if viewLayer == ViewLayerType.PERSIAN_WORD:
             self.layers[ViewLayerType.PERSIAN_WORD] = PersianWordLayer(layerValue)
             self.layers.pop(ViewLayerType.PERSIAN_WORD)
@@ -98,16 +113,40 @@ cdef class LayerInfo:
             self.layers[ViewLayerType.SHALLOW_PARSE] = ShallowParseLayer(layerValue)
 
     cpdef setMorphologicalAnalysis(self, MorphologicalParse parse):
+        """
+        Updates the inflectional_group and part_of_speech layers according to the given parse.
+        :param parse: New parse to update layers.
+        """
         self.layers[ViewLayerType.INFLECTIONAL_GROUP] = MorphologicalAnalysisLayer(parse.__str__())
         self.layers[ViewLayerType.PART_OF_SPEECH] = MorphologicalAnalysisLayer(parse.__str__())
 
     cpdef setMetaMorphemes(self, MetamorphicParse parse):
+        """
+        Updates the metamorpheme layer according to the given parse.
+        :param parse: New parse to update layer.
+        """
         self.layers[ViewLayerType.META_MORPHEME] = MetaMorphemeLayer(parse.__str__())
 
     cpdef bint layerExists(self, object viewLayerType):
+        """
+        Checks if the given layer exists.
+        :param viewLayerType: Layer name
+        :return: True if the layer exists, false otherwise.
+        """
         return viewLayerType in self.layers
 
     cpdef object checkLayer(self, object viewLayer):
+        """
+        Two level layer check method. For turkish, persian and english_semantics layers, if the layer does not exist,
+        returns english layer. For part_of_speech, inflectional_group, meta_morpheme, semantics, propbank, shallow_parse,
+        english_propbank layers, if the layer does not exist, it checks turkish layer. For meta_morpheme_moved, if the
+        layer does not exist, it checks meta_morpheme layer.
+        :param viewLayer: Layer to be checked.
+        :return: Returns the original layer if the layer exists. For turkish, persian and english_semantics layers, if the
+        layer  does not exist, returns english layer. For part_of_speech, inflectional_group, meta_morpheme, semantics,
+        propbank,  shallow_parse, english_propbank layers, if the layer does not exist, it checks turkish layer
+        recursively. For meta_morpheme_moved, if the layer does not exist, it checks meta_morpheme layer recursively.
+        """
         if viewLayer == ViewLayerType.TURKISH_WORD or viewLayer == ViewLayerType.PERSIAN_WORD or \
                 viewLayer == ViewLayerType.ENGLISH_SEMANTICS:
             if viewLayer not in self.layers:
@@ -124,6 +163,10 @@ cdef class LayerInfo:
         return viewLayer
 
     cpdef int getNumberOfWords(self):
+        """
+        Returns number of words in the Turkish or Persian layer, whichever exists.
+        :return: Number of words in the Turkish or Persian layer, whichever exists.
+        """
         if ViewLayerType.TURKISH_WORD in self.layers:
             return self.layers[ViewLayerType.TURKISH_WORD].size()
         elif ViewLayerType.PERSIAN_WORD in self.layers:
@@ -133,6 +176,13 @@ cdef class LayerInfo:
                              object viewLayerType,
                              int index,
                              str layerName):
+        """
+        Returns the layer value at the given index.
+        :param viewLayerType: Layer for which the value at the given word index will be returned.
+        :param index: Word Position of the layer value.
+        :param layerName: Name of the layer.
+        :return: Layer info at word position index for a multiword layer.
+        """
         cdef MultiWordLayer multi_word_layer
         if viewLayerType in self.layers:
             if isinstance(self.layers[viewLayerType], MultiWordLayer):
@@ -144,9 +194,18 @@ cdef class LayerInfo:
                         return multi_word_layer.getItemAt(multi_word_layer.size() - 1)
 
     cpdef str getTurkishWordAt(self, int index):
+        """
+        Layers may contain multiple Turkish words. This method returns the Turkish word at position index.
+        :param index: Position of the Turkish word.
+        :return: The Turkish word at position index.
+        """
         return self.getMultiWordAt(ViewLayerType.TURKISH_WORD, index, "turkish")
 
     cpdef int getNumberOfMeanings(self):
+        """
+        Returns number of meanings in the Turkish layer.
+        :return: Number of meanings in the Turkish layer.
+        """
         if ViewLayerType.SEMANTICS in self.layers:
             return self.layers[ViewLayerType.SEMANTICS].size()
         else:
@@ -156,9 +215,19 @@ cdef class LayerInfo:
         return self.getMultiWordAt(ViewLayerType.SEMANTICS, index, "semantics")
 
     cpdef str getShallowParseAt(self, int index):
+        """
+        Layers may contain multiple shallow parse information corresponding to multiple Turkish words. This method
+        returns the shallow parse tag at position index.
+        :param index: Position of the Turkish word.
+        :return: The shallow parse tag at position index.
+        """
         return self.getMultiWordAt(ViewLayerType.SHALLOW_PARSE, index, "shallowParse")
 
     cpdef Argument getArgument(self):
+        """
+        Returns the Turkish PropBank argument info.
+        :return: Turkish PropBank argument info.
+        """
         cdef TurkishPropbankLayer argument_layer
         if ViewLayerType.PROPBANK in self.layers:
             if isinstance(self.layers[ViewLayerType.PROPBANK], TurkishPropbankLayer):
@@ -170,6 +239,12 @@ cdef class LayerInfo:
             return None
 
     cpdef Argument getArgumentAt(self, int index):
+        """
+        A word may have multiple English propbank info. This method returns the English PropBank argument info at
+        position index.
+        :param index: Position of the argument
+        :return: English PropBank argument info at position index.
+        """
         cdef SingleWordMultiItemLayer multi_argument_layer
         if ViewLayerType.ENGLISH_PROPBANK in self.layers:
             if isinstance(self.layers[ViewLayerType.ENGLISH_PROPBANK], SingleWordMultiItemLayer):
@@ -177,6 +252,12 @@ cdef class LayerInfo:
                 return multi_argument_layer.getItemAt(index)
 
     cpdef MorphologicalParse getMorphologicalParseAt(self, int index):
+        """
+        Layers may contain multiple morphological parse information corresponding to multiple Turkish words. This method
+        returns the morphological parse at position index.
+        :param index: Position of the Turkish word.
+        :return: The morphological parse at position index.
+        """
         cdef MultiWordLayer multi_word_layer
         if ViewLayerType.INFLECTIONAL_GROUP in self.layers:
             if isinstance(self.layers[ViewLayerType.INFLECTIONAL_GROUP], MultiWordLayer):
@@ -185,6 +266,12 @@ cdef class LayerInfo:
                     return multi_word_layer.getItemAt(index)
 
     cpdef MetamorphicParse getMetamorphicParseAt(self, int index):
+        """
+        Layers may contain multiple metamorphic parse information corresponding to multiple Turkish words. This method
+        returns the metamorphic parse at position index.
+        :param index: Position of the Turkish word.
+        :return: The metamorphic parse at position index.
+        """
         cdef MultiWordLayer multi_word_layer
         if ViewLayerType.META_MORPHEME in self.layers:
             if isinstance(self.layers[ViewLayerType.META_MORPHEME], MultiWordLayer):
@@ -193,6 +280,12 @@ cdef class LayerInfo:
                     return multiWordLayer.getItemAt(index)
 
     cpdef str getMetaMorphemeAtIndex(self, int index):
+        """
+        Layers may contain multiple metamorphemes corresponding to one or multiple Turkish words. This method
+        returns the metamorpheme at position index.
+        :param index: Position of the metamorpheme.
+        :return: The metamorpheme at position index.
+        """
         cdef MetaMorphemeLayer meta_morpheme_layer
         if ViewLayerType.META_MORPHEME in self.layers:
             if isinstance(self.layers[ViewLayerType.META_MORPHEME], MetaMorphemeLayer):
@@ -201,6 +294,12 @@ cdef class LayerInfo:
                     return meta_morpheme_layer.getLayerInfoAt(ViewLayerType.META_MORPHEME, index)
 
     cpdef str getMetaMorphemeFromIndex(self, int index):
+        """
+        Layers may contain multiple metamorphemes corresponding to one or multiple Turkish words. This method
+        returns all metamorphemes from position index.
+        :param index: Start position of the metamorpheme.
+        :return: All metamorphemes from position index.
+        """
         cdef MetaMorphemeLayer meta_morpheme_layer
         if ViewLayerType.META_MORPHEME in self.layers:
             if isinstance(self.layers[ViewLayerType.META_MORPHEME], MetaMorphemeLayer):
@@ -209,6 +308,11 @@ cdef class LayerInfo:
                     return meta_morpheme_layer.getLayerInfoFrom(index)
 
     cpdef int getLayerSize(self, object viewLayer):
+        """
+        For layers with multiple item information, this method returns total items in that layer.
+        :param viewLayer: Layer name
+        :return: Total items in the given layer.
+        """
         if isinstance(self.layers[viewLayer], MultiWordMultiItemLayer):
             return self.layers[viewLayer].getLayerSize(viewLayer)
         elif isinstance(self.layers[viewLayer], SingleWordMultiItemLayer):
@@ -217,6 +321,12 @@ cdef class LayerInfo:
     cpdef str getLayerInfoAt(self,
                              object viewLayer,
                              int index):
+        """
+        For layers with multiple item information, this method returns the item at position index.
+        :param viewLayer: Layer name
+        :param index: Position of the item.
+        :return: The item at position index.
+        """
         if viewLayer == ViewLayerType.META_MORPHEME_MOVED or viewLayer == ViewLayerType.PART_OF_SPEECH or \
                 viewLayer == ViewLayerType.INFLECTIONAL_GROUP:
             if isinstance(self.layers[viewLayer], MultiWordMultiItemLayer):
@@ -229,6 +339,10 @@ cdef class LayerInfo:
             return None
 
     cpdef str getLayerDescription(self):
+        """
+        Returns the string form of all layer information except part_of_speech layer.
+        :return: The string form of all layer information except part_of_speech layer.
+        """
         cdef str result
         result = ""
         for view_layer_type in self.layers.keys():
@@ -237,16 +351,31 @@ cdef class LayerInfo:
         return result
 
     cpdef str getLayerData(self, object viewLayer):
+        """
+        Returns the layer info for the given layer.
+        :param viewLayer: Layer name.
+        :return: Layer info for the given layer.
+        """
         if viewLayer in self.layers:
             return self.layers[viewLayer].getLayerValue()
         else:
             return None
 
     cpdef str getRobustLayerData(self, object viewLayer):
+        """
+        Returns the layer info for the given layer, if that layer exists. Otherwise, it returns the fallback layer info
+        determined by the checkLayer.
+        :param viewLayer: Layer name
+        :return: Layer info for the given layer if it exists. Otherwise, it returns the fallback layer info determined by
+        the checkLayer.
+        """
         viewLayer = self.checkLayer(viewLayer)
         return self.getLayerData(viewLayer)
 
     cpdef updateMetaMorphemesMoved(self):
+        """
+        Initializes the metamorphemesmoved layer with metamorpheme layer except the root word.
+        """
         cdef str result
         cdef int i
         cdef MetaMorphemeLayer meta_morpheme_layer
@@ -259,34 +388,64 @@ cdef class LayerInfo:
                 self.layers[ViewLayerType.META_MORPHEME_MOVED] = MetaMorphemesMovedLayer(result)
 
     cpdef removeLayer(self, object layerType):
+        """
+        Removes the given layer from hash map.
+        :param layerType: Layer to be removed.
+        """
         self.layers.pop(layerType)
 
     cpdef metaMorphemeClear(self):
+        """
+        Removes metamorpheme and metamorphemesmoved layers.
+        """
         self.layers.pop(ViewLayerType.META_MORPHEME)
         self.layers.pop(ViewLayerType.META_MORPHEME_MOVED)
 
     cpdef englishClear(self):
+        """
+        Removes English layer.
+        """
         self.layers.pop(ViewLayerType.ENGLISH_WORD)
 
     cpdef dependencyLayer(self):
+        """
+        Removes the dependency layer.
+        """
         self.layers.pop(ViewLayerType.DEPENDENCY)
 
     cpdef metaMorphemesMovedClear(self):
+        """
+        Removed metamorphemesmoved layer.
+        """
         self.layers.pop(ViewLayerType.META_MORPHEME_MOVED)
 
     cpdef semanticClear(self):
+        """
+        Removes the Turkish semantic layer.
+        """
         self.layers.pop(ViewLayerType.SEMANTICS)
 
     cpdef englishSemanticClear(self):
+        """
+        Removes the English semantic layer.
+        """
         self.layers.pop(ViewLayerType.ENGLISH_SEMANTICS)
 
     cpdef morphologicalAnalysisClear(self):
+        """
+        Removes the morphological analysis, part of speech, metamorpheme, and metamorphemesmoved layers.
+        """
         self.layers.pop(ViewLayerType.INFLECTIONAL_GROUP)
         self.layers.pop(ViewLayerType.PART_OF_SPEECH)
         self.layers.pop(ViewLayerType.META_MORPHEME)
         self.layers.pop(ViewLayerType.META_MORPHEME_MOVED)
 
     cpdef MetamorphicParse metaMorphemeRemove(self, int index):
+        """
+        Removes the metamorpheme at position index.
+        :param index: Position of the metamorpheme to be removed.
+        :return: Metamorphemes concatenated as a string after the removed metamorpheme.
+        """
         cdef MetaMorphemeLayer meta_morpheme_layer
         if ViewLayerType.META_MORPHEME in self.layers:
             meta_morpheme_layer = self.layers[ViewLayerType.META_MORPHEME]
@@ -324,6 +483,12 @@ cdef class LayerInfo:
         return result
 
     cpdef AnnotatedWord toAnnotatedWord(self, int wordIndex):
+        """
+        Converts layer info of the word at position wordIndex to an AnnotatedWord. Layers are converted to their
+        counterparts in the AnnotatedWord.
+        :param wordIndex: Index of the word to be converted.
+        :return: Converted annotatedWord
+        """
         cdef AnnotatedWord annotated_word
         annotated_word = AnnotatedWord(self.getTurkishWordAt(wordIndex))
         if self.layerExists(ViewLayerType.INFLECTIONAL_GROUP):
