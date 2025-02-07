@@ -500,7 +500,7 @@ cdef class LayerInfo:
         if self.layerExists(ViewLayerType.NER):
             annotated_word.setNamedEntityType(self.getLayerData(ViewLayerType.NER))
         if self.layerExists(ViewLayerType.PROPBANK):
-            annotated_word.setArgument(self.getArgument().__str__())
+            annotated_word.setArgumentList(self.getArgument().__str__())
         if self.layerExists(ViewLayerType.SHALLOW_PARSE):
             annotated_word.setShallowParse(self.getShallowParseAt(wordIndex))
         return annotated_word
