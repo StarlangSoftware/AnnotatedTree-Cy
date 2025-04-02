@@ -1,10 +1,12 @@
+from typing import Optional
+
 from AnnotatedSentence.ViewLayerType import ViewLayerType
 
 
 cdef class ParseNodeDrawable(ParseNode):
 
     def __init__(self,
-                 parent: ParseNodeDrawable,
+                 parent: Optional[ParseNodeDrawable],
                  line: str,
                  isLeaf: bool,
                  depth: int):
